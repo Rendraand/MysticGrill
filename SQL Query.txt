@@ -1,0 +1,50 @@
+SQL Query
+
+CREATE TABLE Users(
+    userId int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    userRole VARCHAR(10),
+    userName VARCHAR(50),
+    userEmail VARCHAR(50),
+    userPassword VARCHAR(20)
+);
+
+CREATE Table MenuItems(
+    menuItemId int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    menuItemName VARCHAR(30),
+    menuItemDesc VARCHAR(50),
+    menuItemPrice double
+);
+
+CREATE TABLE OrderItems (
+    orderItemId int AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    orderId int,
+    menuItemId int,
+    quantity int,
+    FOREIGN KEY (orderId) REFERENCES Orders(orderId),
+    FOREIGN KEY (menuItemId) REFERENCES MenuItems(menuItemId)
+);
+
+CREATE TABLE Orders (
+    orderId int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    userId int,
+    orderStatus VARCHAR(10),
+    orderDate DATE,
+    orderTotal double,
+
+    FOREIGN KEY (userId) REFERENCES Users(userId)
+);
+
+-- Query untuk view ordered items: --
+
+SELECT orders.orderId, orders.userId, orders.orderStatus, orders.orderDate, orderitems.menuItemId, orderitems.quantity FROM orders JOIN
+orderitems ON orders.orderId=orderitems.orderId
+WHERE orders.orderId = 1
+
+-- query pas select menuitems --
+
+/* Query pas submit order
+Insert ke order table (userId, orderStatus = Pending, orderDate = date hari ini, 
+orderTotal = menuItemPrice*quantity berdasarkan menuItemId trus dijumlahin berdasarkan orderId yang sama) 
+trus kita akan add orderId dan juga menuItemId yang udah diselect ke OrderItems table beserta Quantity. 
+
+selama order nya blom di submit, maka orderId akan selalu sama. (Tidak akan bertambah) */
